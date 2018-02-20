@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Arduino Ajax LED Button Control</title>
+        <script>
+		strLED1 = "";
+		strLED2 = "";
+		var LED1_state = 0;
+		var LED2_state = 0;
+		function GetArduinoIO()
+		{
+			nocache = "&nocache=" + Math.random() * 1000000;
+			var request = new XMLHttpRequest();
+			request.onreadystatechange = function()
+			{
+				if (this.readyState == 4) {
+					if (this.status == 200) {
+						if (this.responseXML != null) {
+							// XML file received - contains analog values, switch values and LED states
+							var count;
+							// LED 1
+							if (this.responseXML.getElementsByTagName('LED')[0].childNodes[0].nodeValue === "checked") {
+								document.LED_form.LED1.checked = true;
+							}
+							else {
+								document.LED_form.LED1.checked = false;
+							}
+							// LED 2
+							if (this.responseXML.getElementsByTagName('LED')[1].childNodes[0].nodeValue === "on") {
+								document.getElementById("LED2").innerHTML = "LED 2 is ON (D7)";
+								LED2_state = 1;
+							}
+							else {
+								document.getElementById("LED2").innerHTML = "LED 2 is OFF (D7)";
+								LED2_state = 0;
+							}
+						}
+					}
+				}
+			}
+			// send HTTP GET request with LEDs to switch on/off if any
+			// console.log(strLED1 + " - " + strLED2);
+			request.open("GET", "ajax_inputs" + strLED1 + strLED2 + nocache, true);
+			request.send(null);
+			setTimeout('GetArduinoIO()', 1000);
+			strLED1 = "";
+			strLED2 = "";
+		}
+		// service LEDs when checkbox checked/unchecked
+		function GetCheck()
+		{
+			if (LED_form.LED1.checked) {
+				strLED1 = "&LED1=1";
+			}
+			else {
+				strLED1 = "&LED1=0";
+			}
+		}
+		function GetButton1()
+		{
+			// console.log("oi");
+			if (LED1_state === 1) {
+				LED1_state = 0;
+				strLED1 = "&LED1=0";
+			}
+			else {
+				LED1_state = 1;
+				strLED1 = "&LED1=1";
+			}
+		}
+		function GetButton2()
+		{
+			// console.log("oi");
+			if (LED2_state === 1) {
+				LED2_state = 0;
+				strLED2 = "&LED2=0";
+			}
+			else {
+				LED2_state = 1;
+				strLED2 = "&LED2=1";
+			}
+		}
+	</script>
+<style type="text/css">
+/* 
+    CSS Projeto Automacao Residencial
+    AL Serviços Elétricos
+*/
+
+root { 
+    display: block;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+#wrapper {
+    padding-top: 40px;
+    position: relative;
+    width: 980px;
+    height: 800px;
+	margin-right: auto;
+	margin-top: 0;
+	margin-left: auto;
+        font-size: 30px;
+        color: black;
+        text-align: center;
+        font-family: arial;
+		background: url(Fundo_Tela-Papel-de-Parede-Piso-de-Madeira.jpg);
+} 
+
+div.rele1_ligado {
+    position: absolute;
+    right: -110px;
+    top: 203px;
+    width: 87%;
+    height: 106px;
+	border: none;
+    background: url(lampada_ligada.png) no-repeat left top;
+}
+
+div.rele1_desligado {
+    position: absolute;
+    right: -110px;
+    top: 203px;
+    width: 87%;
+    height: 106px;
+	border: none;
+	background: url(lampada_desligada.png) no-repeat left top;
+}
+
+div.rele2_ligado {
+    position: absolute;
+    right: -110px;
+    top: 203px;
+    width: 57%;
+    height: 106px;
+    border: none;
+    background: url(lampada_ligada.png) no-repeat left top;
+}
+
+div.rele2_desligado {
+    position: absolute;
+    right: -110px;
+    top: 203px;
+    width: 57%;
+    height: 106px;
+    border: none;
+	background: url(lampada_desligada.png) no-repeat left top;
+}
+
+#div1 {
+	position: absolute;
+	right: 68%;
+	float:left;
+	top: 195px;
+    border-radius: 25px;
+    border: 4px solid #000000;
+    width: 25%;
+    height: 100px; 
+}
+
+#div2 {
+	position: absolute;
+	right: 38%;
+	float:left;
+	top: 195px;
+    border-radius: 25px;
+    border: 4px solid #000000;
+    width: 25%;
+    height: 100px; 
+}
+
+#botao{
+    position: absolute;
+    right: 70%;
+    top: 240px;
+	 width: 30%;
+    height: 256px;
+}
+
+.botao_1 {
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow: 1px 1px 0 1px #ffffff;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.1, #16ADFF), color-stop(1, #26A8FF) );
+	background:-moz-linear-gradient( center top, #16ADFF 5%, #26A8FF 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#16ADFF', endColorstr='#26A8FF');
+	background-color:#ededed;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:0.5em;
+	border:0px solid #dcdcdc;
+	display:inline-block;
+	color:#ffffff;
+	font-family:arial;
+	font-size:28px;
+	font-weight:bold;
+	padding:5px 5px;
+	text-decoration:none;
+	text-shadow:2px 2px 2px rgba(0,0,0,0.5);
+	transition: box-shadow 0.1s ease, transform 0.1s ease;
+        width: 100px;
+        text-align: center;
+		background: url(Fundo_Tela-Papel-de-Parede-Piso-de-Madeira.jpg);
+}
+
+.botao_1:active {
+	position:relative;
+	top:1px;
+	box-shadow: 0 0 0 0 #ffffff;
+	transform: translate(3px, 3px);
+	
+}
+
+#botao_2{
+    position: absolute;
+    right: 34%;
+    top: 240px;
+	 width: 42%;
+    height: 156px;
+}
+
+.botao_2 {
+	-moz-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #ffffff;
+	box-shadow: 1px 1px 0 1px #ffffff;
+	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.1, #16ADFF), color-stop(1, #26A8FF) );
+	background:-moz-linear-gradient( center top, #16ADFF 5%, #26A8FF 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#16ADFF', endColorstr='#26A8FF');
+	background-color:#ededed;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:0.5em;
+	border:0px solid #dcdcdc;
+	display:inline-block;
+	color:#ffffff;
+	font-family:arial;
+	font-size:28px;
+	font-weight:bold;
+	padding:5px 5px;
+	text-decoration:none;
+	text-shadow:2px 2px 2px rgba(0,0,0,0.5);
+	transition: box-shadow 0.1s ease, transform 0.1s ease;
+        width: 100px;
+        text-align: center;
+		background: url(Fundo_Tela-Papel-de-Parede-Piso-de-Madeira.jpg);
+}
+
+.botao_2:active {
+	position:relative;
+	top:1px;
+	box-shadow: 0 0 0 0 #ffffff;
+	transform: translate(3px, 3px);
+}   
+
+</style>
+</head>
+    <body onload="GetArduinoIO()">
+		<div id='wrapper'>AL Serviços Elétricos<br/> Automação Residencial
+		  <div id='div1'>Sala</div>
+	      <div id='div2'>Cozinha</div>
+	      <div id='rele'></div><div style='visibility: hidden;'></div>
+	      	<div id='botao'>
+	      		<button type="button" id="LED1" onclick="GetButton1()" class="botao_1">Liga</button>
+	      	</div>
+		      <div id='botao_2'>
+		      	<button type="button" id="LED2" onclick="GetButton2()" class="botao_2">Liga</button>
+		      </div>
+	      <div id='rele_2'></div>
+
+		</div>
+	</body>
+</html>
